@@ -28,7 +28,7 @@ import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import api from "../../services/api";
 import getRealm from "../../services/realm";
 
-export default function Loading(props) {
+export default function MechanicalProfile(props) {
     const { oficina, onClose } = props;
     oficina.services = ["#", "#", "#", "#", "#", "#"];
     oficina.evaluations = [{ user: { name: "Carregando" }, description: "Carregando avaliações." }];
