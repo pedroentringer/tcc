@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert } from "react-native";
+import { Alert, TouchableWithoutFeedback } from "react-native";
 
 import {
     Container,
@@ -29,7 +29,6 @@ import {
 import api from "../../services/api";
 import getRealm from "../../services/realm";
 import Loading from "../../components/Loading";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function SOS(props) {
     const { navigation } = props;
@@ -118,7 +117,7 @@ export default function SOS(props) {
                     break;
             }
             return (
-                <TouchableOpacity
+                <TouchableWithoutFeedback
                     key={index}
                     onPress={() => {
                         navigation.navigate("SOSOrcamento", { sos: sos._id, orcamento: item._id });
@@ -134,7 +133,7 @@ export default function SOS(props) {
                             <CardStatusText>{status.text}</CardStatusText>
                         </CardStatus>
                     </Card>
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
             );
         });
     };

@@ -62,6 +62,7 @@ export default function SOSOrcamento(props) {
         setIsLoading(true);
         let newOrcamento = orcamento;
         newOrcamento.status = status;
+        newOrcamento.statusApp = getStatus(status);
         try {
             const realm = await getRealm();
             const user = await realm.objectForPrimaryKey("User", 1);
@@ -70,11 +71,6 @@ export default function SOSOrcamento(props) {
             const response = await api.put(`/users/${user._id}/sos/${sosID}/budgets/${orcamentoId}`, newOrcamento, { headers: { token: token.token } });
             setIsLoading(false);
 
-            if (status == "A") {
-                showAlert("Tudo certo", "Orçamento Aprovado com sucesso.");
-            } else {
-                showAlert("Tudo certo", "Orçamento Recusado com sucesso.");
-            }
             setOrcamento(newOrcamento);
         } catch (e) {
             setIsLoading(false);

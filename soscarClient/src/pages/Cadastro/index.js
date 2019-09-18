@@ -119,7 +119,7 @@ export default function Cadastro(props) {
                                 <Picker selectedValue={genero} onValueChange={(itemValue, itemIndex) => setGenero(itemValue)}>
                                     <Picker.Item label="Masculino" value="male" />
                                     <Picker.Item label="Feminino" value="female" />
-                                    <Picker.Item label="Outro" value="other" />
+                                    <Picker.Item label="Indefinido" value="other" />
                                 </Picker>
                             </ViewPicker>
                         </Card>

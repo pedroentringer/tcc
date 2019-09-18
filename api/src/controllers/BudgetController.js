@@ -30,6 +30,7 @@ module.exports = {
         }
 
         const budget = await Budget.findById(idBudget);
+        budget.mechanical = await Mechanical.findById(budget.mechanical, { _id: 1, picture: 1, name: 1, description: 1, evaluation: 1 });
 
         return res.json({ status: true, budget: budget });
     },

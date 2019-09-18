@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Image, Alert } from "react-native";
+import { StackActions, NavigationActions } from "react-navigation";
 
 import { Container, Scroll, Content, Title, Descricao, Card, CardTitle, Input, ButtonNextContent, Button, ButtonText, ViewPicker, Picker } from "./styles";
 
@@ -44,6 +45,7 @@ export default function NovoSOS(props) {
 
     async function newSOS() {
         setIsLoading(true);
+
         try {
             const lastKnownLocation = await location.getLastKnownLocation();
             const realm = await getRealm();
@@ -61,19 +63,20 @@ export default function NovoSOS(props) {
                 status: "P"
             };
 
-            try {
-                const response = await api.post(`/users/${user._id}/sos`, newSos, { headers: { token: token.token } });
-                setIsLoading(false);
-                navigation.navigate("Main");
-                navigation.navigate("ListaSOS");
-            } catch (e) {
-                setIsLoading(false);
-                const message = e.response.data.message || "Falha ao registar seu SOS, tente novamente.";
-                showAlert("Algo deu errado", message);
-            }
-        } catch (e) {
+            const response = await api.post(`/users/${user._id}/sos`, newSos, { headers: { token: token.token } });
             setIsLoading(false);
-            showAlert("Ative o GPS", "Não conseguimos achar sua localização, por favor ative o GPS e tente novamente.");
+
+            const resetAction = StackActions.reset({
+                index: 1,
+                actions: [NavigationActions.navigate({ routeName: "Main" }), NavigationActions.navigate({ routeName: "ListaSOS" })]
+            });
+
+            navigation.dispatch(resetAction);
+        } catch (e) {
+            console.tron.log(e);
+            setIsLoading(false);
+            const message = e.response.data.message || "Falha ao registar seu SOS, tente novamente.";
+            showAlert("Algo deu errado", message);
         }
     }
 
