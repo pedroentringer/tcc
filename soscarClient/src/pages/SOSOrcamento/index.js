@@ -1,35 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Alert } from "react-native";
 
-import {
-    Container,
-    ContainerStatus,
-    ContainerStatusContent,
-    Header,
-    Status,
-    StatusText,
-    CancelarSOS,
-    BtnCancelarSOS,
-    Scroll,
-    Content,
-    Title,
-    Card,
-    CarImage,
-    CardImage,
-    CardBoard,
-    CardDetails,
-    CardContent,
-    CardTitle,
-    CardDescription,
-    CardStatus,
-    CardStatusText,
-    Mensagem
-} from "./styles";
+import { Container, OficinaProfileContent, Oficina, OficinaAvatar, OficinaContent, OficinaDescricao, OficinaNome, OficinaStar, OficinaStarText, Conteudo, Titulo, Descricao, Secao, Botoes, Botao, BotaoText } from "./styles";
 
 import api from "../../services/api";
 import getRealm from "../../services/realm";
 import Loading from "../../components/Loading";
 import MechanicalProfile from "../../components/MechanicalProfile";
+
+import StarImage from "../../assets/img/star-fill.png";
 
 export default function SOSOrcamento(props) {
     const { navigation } = props;
@@ -37,12 +16,11 @@ export default function SOSOrcamento(props) {
     const sosID = navigation.getParam("sos");
 
     const [orcamento, setOrcamento] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [oficinaSelecionada, setOficinaSelecionada] = useState(null);
 
     useEffect(() => {
         async function getOrcamento() {
-            setIsLoading(true);
             try {
                 const realm = await getRealm();
                 const user = await realm.objectForPrimaryKey("User", 1);
@@ -76,7 +54,11 @@ export default function SOSOrcamento(props) {
         );
     }
 
-    async function handleUpdateOrcamento(status, isAprovado) {
+    async function handleOficina() {
+        setOficinaSelecionada(orcamento.mechanical);
+    }
+
+    async function handleUpdateOrcamento(status) {
         setIsLoading(true);
         let newOrcamento = orcamento;
         newOrcamento.status = status;
@@ -85,14 +67,15 @@ export default function SOSOrcamento(props) {
             const user = await realm.objectForPrimaryKey("User", 1);
             const token = await realm.objectForPrimaryKey("Token", 1);
 
-            const response = await api.put(`/users/${user._id}/sos/${sos._id}/budgets/${orcamentoId}`, newOrcamento, { headers: { token: token.token } });
+            const response = await api.put(`/users/${user._id}/sos/${sosID}/budgets/${orcamentoId}`, newOrcamento, { headers: { token: token.token } });
             setIsLoading(false);
 
-            if (isAprovado == true) {
-                navigation.navigate("Main"); //tela de orçamento aprovado
+            if (status == "A") {
+                showAlert("Tudo certo", "Orçamento Aprovado com sucesso.");
             } else {
-                showAlert("Tudo certo", "Orçamento Cancelado com sucesso.");
+                showAlert("Tudo certo", "Orçamento Recusado com sucesso.");
             }
+            setOrcamento(newOrcamento);
         } catch (e) {
             setIsLoading(false);
             const message = e.response.data.message || "Falha ao atualizar status do orçamento, tente novamente.";
@@ -126,21 +109,85 @@ export default function SOSOrcamento(props) {
     return (
         <>
             {isLoading && <Loading />}
-            {oficinaSelecionada != null && (
-                <MechanicalProfile
-                    oficina={oficinaSelecionada}
-                    onClose={() => {
-                        setOficinaSelecionada(null);
-                    }}
-                />
+
+            {orcamento != null && (
+                <>
+                    <Container>
+                        <Oficina>
+                            <OficinaAvatar
+                                source={{
+                                    uri: orcamento.mechanical.picture
+                                }}
+                            />
+                            <OficinaContent>
+                                <OficinaNome>{orcamento.mechanical.name}</OficinaNome>
+                                <OficinaDescricao>{orcamento.mechanical.description}</OficinaDescricao>
+                                <Oficina>
+                                    <OficinaStar source={StarImage} />
+                                    <OficinaStarText>{orcamento.mechanical.evaluation.number.$numberDecimal}</OficinaStarText>
+                                </Oficina>
+                            </OficinaContent>
+                        </Oficina>
+                        <Botoes>
+                            <Botao style={{ backgroundColor: "#5C7196" }} onPress={handleOficina}>
+                                <BotaoText>Ver Perfil Completo</BotaoText>
+                            </Botao>
+                        </Botoes>
+
+                        <Conteudo>
+                            <Secao>
+                                <Titulo>Detalhes do Serviço:</Titulo>
+                                <Descricao>{orcamento.description}</Descricao>
+                            </Secao>
+                            <Secao>
+                                <Titulo>Tempo de duração:</Titulo>
+                                <Descricao>{orcamento.duration.$numberDecimal} horas</Descricao>
+                            </Secao>
+                            <Secao>
+                                <Titulo>Preço:</Titulo>
+                                <Descricao>R${orcamento.price.$numberDecimal}</Descricao>
+                            </Secao>
+                        </Conteudo>
+
+                        {orcamento.status == "P" ? (
+                            <Botoes>
+                                <Botao
+                                    style={{ backgroundColor: "#F5365C" }}
+                                    onPress={() => {
+                                        handleUpdateOrcamento("R");
+                                    }}
+                                >
+                                    <BotaoText>Recusar</BotaoText>
+                                </Botao>
+                                <Botao
+                                    style={{ backgroundColor: "#2DCE89" }}
+                                    onPress={() => {
+                                        handleUpdateOrcamento("A");
+                                    }}
+                                >
+                                    <BotaoText>Aprovar</BotaoText>
+                                </Botao>
+                            </Botoes>
+                        ) : (
+                            <Botoes>
+                                <Botao style={{ backgroundColor: orcamento.statusApp.backgroundColor }}>
+                                    <BotaoText>{orcamento.statusApp.text}</BotaoText>
+                                </Botao>
+                            </Botoes>
+                        )}
+                    </Container>
+                    {oficinaSelecionada != null && (
+                        <OficinaProfileContent>
+                            <MechanicalProfile
+                                oficina={oficinaSelecionada}
+                                onClose={() => {
+                                    setOficinaSelecionada(null);
+                                }}
+                            />
+                        </OficinaProfileContent>
+                    )}
+                </>
             )}
-            <Container>
-                <Scroll>
-                    <Content>
-                        <Title>Orçamento</Title>
-                    </Content>
-                </Scroll>
-            </Container>
         </>
     );
 }
