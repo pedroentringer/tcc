@@ -20,6 +20,7 @@ import NovoSOS from "./pages/NovoSOS/";
 import ListaSOS from "./pages/ListaSOS/";
 import SOS from "./pages/SOS/";
 import SOSOrcamento from "./pages/SOSOrcamento/";
+import Perfil from "./pages/Perfil";
 
 const defaultNavigationOptions = {
     headerBackImage: <Image source={backIcon} style={{ margin: 10 }} />,
@@ -87,6 +88,7 @@ const Main = createStackNavigator(
         ListaSOS,
         SOS,
         SOSOrcamento,
+        Perfil,
         CadastroVeiculo
     },
     {

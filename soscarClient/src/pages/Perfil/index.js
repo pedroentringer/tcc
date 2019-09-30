@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Text } from "react-native";
+import { Alert, Text, View } from "react-native";
 import {
     OficinaCard,
     OficinaImage,
@@ -16,7 +16,10 @@ import {
     CardAvaliacao,
     CardAvaliacaoImage,
     CardAvaliacaoTitle,
-    CardAvaliacaoDescricao
+    CardAvaliacaoDescricao,
+    Buttons,
+    Button,
+    ButtonText
 } from "./styles";
 
 import { ScrollView } from "react-native-gesture-handler";
@@ -41,9 +44,24 @@ export default function Perfil(props) {
             const vehicles = await realm.objects("Vehicle");
             setVehicles(vehicles);
             setUser(user);
+            realm.close();
         } catch (e) {
             showAlert("Algo deu errado", "Falha ao buscar dados do usuário, tente novamente.");
             navigation.goBack();
+        }
+    }
+
+    async function handleLogout() {
+        try {
+            const realm = await getRealm();
+            realm.beginTransaction();
+            realm.deleteAll();
+            realm.commitTransaction();
+            realm.close();
+            navigation.navigate("Login");
+        } catch (e) {
+            console.tron.log(e.data);
+            showAlert("Algo deu errado", "Falha ao fazer logout, tente novamente.");
         }
     }
 
@@ -63,14 +81,16 @@ export default function Perfil(props) {
     renderAvaliacoes = () => {
         return vehicles.map((vehicle, index) => {
             return (
-                <CardAvaliacao>
+                <CardAvaliacao key={index}>
                     <CardAvaliacaoImage
                         source={{
-                            uri: evaluation.user.picture
+                            uri: vehicle.picture
                         }}
                     />
-                    <CardAvaliacaoTitle>{evaluation.user.name}</CardAvaliacaoTitle>
-                    <CardAvaliacaoDescricao>{evaluation.description}</CardAvaliacaoDescricao>
+                    <CardAvaliacaoTitle>
+                        {vehicle.brand} {vehicle.model}
+                    </CardAvaliacaoTitle>
+                    <CardAvaliacaoDescricao>{vehicle.board}</CardAvaliacaoDescricao>
                 </CardAvaliacao>
             );
         });
@@ -79,33 +99,57 @@ export default function Perfil(props) {
     return (
         <>
             {user == null ? (
-                <ShimmerPlaceHolder key={index} autoRun={true} visible={shimmer} style={{ width: 300, height: 80, borderRadius: 10, margin: 10 }}></ShimmerPlaceHolder>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <ShimmerPlaceHolder autoRun={true} visible={false} style={{ width: 100, height: 100, borderRadius: 50 }}></ShimmerPlaceHolder>
+                </View>
             ) : (
                 <OficinaCard>
-                    <OficinaImage
-                        source={{
-                            uri: oficina.picture
-                        }}
-                    />
-
                     <OficinaDetaisContent>
-                        <OficinaNome>{oficina.name}</OficinaNome>
-                        <OficinaDescricao>{oficina.description}</OficinaDescricao>
+                        <OficinaImage
+                            source={{
+                                uri: user.picture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRBR5_JVBsUHXXto2MiT_KX9s74z4XI3zEeOIbNchYC-ETV-tXdw"
+                            }}
+                        />
+                        <OficinaNome>{user.name}</OficinaNome>
+                        <OficinaDescricao>Avaliações: {user.evaluationNumber} estrelas.</OficinaDescricao>
                     </OficinaDetaisContent>
                     <OficinaDetalhes>
                         <OficinaDetalhesServices>
-                            <OficinaDetalhesTitle>Serviços</OficinaDetalhesTitle>
+                            <OficinaDetalhesTitle>Telefone</OficinaDetalhesTitle>
                             <OficinaDetalhesServicesContent>
-                                <Text>Teste</Text>
+                                <Text>{user.tel}</Text>
+                            </OficinaDetalhesServicesContent>
+
+                            <OficinaDetalhesTitle>Email</OficinaDetalhesTitle>
+                            <OficinaDetalhesServicesContent>
+                                <Text>{user.email}</Text>
+                            </OficinaDetalhesServicesContent>
+
+                            <OficinaDetalhesTitle>CPF</OficinaDetalhesTitle>
+                            <OficinaDetalhesServicesContent>
+                                <Text>{user.cpf}</Text>
                             </OficinaDetalhesServicesContent>
                         </OficinaDetalhesServices>
                         <OficinaDetalhesAvaliacoes>
-                            <OficinaDetalhesTitle>Avaliações</OficinaDetalhesTitle>
+                            <OficinaDetalhesTitle>Veículos</OficinaDetalhesTitle>
                             <ScrollView horizontal={true}>
                                 <OficinaDetalhesAvaliacoesContent horizontal={true}>{this.renderAvaliacoes()}</OficinaDetalhesAvaliacoesContent>
                             </ScrollView>
                         </OficinaDetalhesAvaliacoes>
                     </OficinaDetalhes>
+                    <Buttons>
+                        <Button style={{ backgroundColor: "#e53935" }} onPress={handleLogout}>
+                            <ButtonText>Sair</ButtonText>
+                        </Button>
+                        <Button
+                            style={{ backgroundColor: "#2dce89" }}
+                            onPress={() => {
+                                navigation.navigate("CadastroVeiculo");
+                            }}
+                        >
+                            <ButtonText>Novo Veículo</ButtonText>
+                        </Button>
+                    </Buttons>
                 </OficinaCard>
             )}
         </>

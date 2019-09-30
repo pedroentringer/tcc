@@ -142,7 +142,7 @@ export default function Menu(props) {
 
                             <CircleButton
                                 onPress={() => {
-                                    navigation.navigate("CadastroVeiculo");
+                                    navigation.navigate("Perfil");
                                 }}
                             >
                                 <Image source={IconProfileImage} />

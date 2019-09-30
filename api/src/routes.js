@@ -11,10 +11,13 @@ const BudgetController = require("./controllers/BudgetController");
 const MechanicalController = require("./controllers/MechanicalController");
 
 const BoardSearch = require("./controllers/tools/BoardSearch");
+const SosSearch = require("./controllers/tools/SosSearch");
 const Upload = require("./controllers/tools/Upload");
 
-routes.post("/login", LoginController.index);
+routes.post("/login", LoginController.user);
+routes.post("/loginMechanical", LoginController.mechanical);
 
+routes.get("/tools/sos/", SosSearch.search);
 routes.get("/tools/board/:board", BoardSearch.search);
 routes.post("/tools/upload", jwt.verify, Upload.file);
 

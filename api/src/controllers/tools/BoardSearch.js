@@ -8,7 +8,7 @@ module.exports = {
 
         try {
             const vehicle = await sinesp.search(board);
-            const images = await googleClient.search(`${vehicle.modelo} cor ${vehicle.cor} ${vehicle.ano}/${vehicle.anoModelo}`);
+            const images = await googleClient.search(`${vehicle.modelo} cor ${vehicle.cor} ano ${vehicle.ano} modelo ${vehicle.anoModelo}`);
 
             const info = {
                 brand: vehicle.marca.split("/")[0],

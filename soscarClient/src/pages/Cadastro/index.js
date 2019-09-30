@@ -40,13 +40,13 @@ export default function Cadastro(props) {
     async function handleLoginFacebook() {
         setIsLoading(true);
         try {
-            const loginResult = await LoginManager.logInWithPermissions(["email", "user_gender", "user_birthday"]);
+            const loginResult = await LoginManager.logInWithPermissions(["email", "user_gender", "user_birthday", "picture"]);
 
             if (loginResult.isCancelled == false) {
                 const accessTokenResult = await AccessToken.getCurrentAccessToken();
                 const token = accessTokenResult.accessToken.toString();
 
-                const fieldsApi = ["id", "name", "email", "gender", "birthday"].join("%2C");
+                const fieldsApi = ["id", "name", "email", "gender", "birthday", "picture"].join("%2C");
                 const url = `me?fields=${fieldsApi}&access_token=${token}`;
 
                 const facebookResult = await facebook.get(url);

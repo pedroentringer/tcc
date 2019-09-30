@@ -4,7 +4,7 @@ const User = require("../models/User");
 const UserEvaluation = require("../models/UserEvaluation");
 const jwt = require("../middlewares/jsonwebtoken");
 
-const km = 3;
+const km = 10;
 const milha = km / 1.609;
 const radius = milha / 3963.2;
 

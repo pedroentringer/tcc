@@ -1,5 +1,4 @@
 import styled from "styled-components/native";
-import { Animated } from "react-native";
 
 export const OficinaCard = styled.View`
     flex: 1;
@@ -23,18 +22,13 @@ export const SpaceContent = styled.View`
     border-radius: 50px;
 `;
 
-export const OficinaImage = styled(Animated.Image)`
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
-    z-index: 5;
+export const OficinaImage = styled.Image`
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
 `;
 
-export const OficinaDetaisContent = styled(Animated.View)`
-    margin-top: 20px;
+export const OficinaDetaisContent = styled.View`
     align-items: center;
 `;
 
@@ -50,8 +44,8 @@ export const OficinaDescricao = styled.Text`
     text-transform: uppercase;
 `;
 
-export const OficinaDetalhes = styled(Animated.View)`
-    margin: 150px 10px 10px 10px;
+export const OficinaDetalhes = styled.View`
+    margin: 10px;
     flex: 1;
     flex-direction: column;
 `;
@@ -59,7 +53,6 @@ export const OficinaDetalhes = styled(Animated.View)`
 export const OficinaDetalhesTitle = styled.Text`
     font-family: "Montserrat-Bold";
     font-size: 20px;
-    margin-bottom: 10px;
 `;
 
 export const OficinaDetalhesServices = styled.View`
@@ -69,6 +62,7 @@ export const OficinaDetalhesServices = styled.View`
 export const OficinaDetalhesServicesContent = styled.View`
     flex-direction: row;
     flex-wrap: wrap;
+    margin-bottom: 10px;
 `;
 
 export const OficinaDetalhesServicesTipo = styled.Text`
@@ -114,4 +108,31 @@ export const CardAvaliacaoTitle = styled.Text`
 export const CardAvaliacaoDescricao = styled.Text`
     font-family: "Montserrat-Regular";
     font-size: 12px;
+`;
+
+export const Buttons = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 40px;
+`;
+
+export const Button = styled.TouchableOpacity.attrs({
+    activeOpacity: 0.9
+})`
+    padding: 0 20px;
+    height: 40px;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 7px 18px rgba(87, 69, 239, 0.2);
+    elevation: 1;
+`;
+
+export const ButtonText = styled.Text`
+    font-family: "Montserrat-Bold";
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #fff;
 `;
