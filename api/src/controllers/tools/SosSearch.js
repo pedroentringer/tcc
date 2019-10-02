@@ -1,6 +1,6 @@
-const User = require("../models/User");
-const Sos = require("../models/Sos");
-const Vehicle = require("../models/Vehicle");
+const User = require("../../models/User");
+const Sos = require("../../models/Sos");
+const Vehicle = require("../../models/Vehicle");
 
 const km = 10;
 const milha = km / 1.609;

@@ -30,7 +30,7 @@ module.exports = {
     },
     async mechanical(req, res) {
         const mechanical = req.body;
-        const loggedMechanical = await Mechanical.findOne({ tel: user.tel, password: user.password });
+        const loggedMechanical = await Mechanical.findOne({ tel: mechanical.tel, password: mechanical.password }, {password:0});
 
         if (!loggedMechanical) {
             return res.status(400).json({ status: false, message: "Cadastro não encontrado." });
