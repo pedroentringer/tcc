@@ -40,7 +40,7 @@ export default function Cadastro(props) {
     async function handleLoginFacebook() {
         setIsLoading(true);
         try {
-            const loginResult = await LoginManager.logInWithPermissions(["email", "user_gender", "user_birthday", "picture"]);
+            const loginResult = await LoginManager.logInWithPermissions(["email", "user_gender", "user_birthday", ]);
 
             if (loginResult.isCancelled == false) {
                 const accessTokenResult = await AccessToken.getCurrentAccessToken();

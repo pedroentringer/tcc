@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://192.168.88.186:3333"
+    baseURL: "http://consulta.iconexlog.com.br/soscar"
 });
 
 export default api;
