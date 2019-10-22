@@ -10,7 +10,7 @@ export default function Profile(props) {
     return (
         <Container>
             <Content style={styles.container}>
-                <Thumbnail source={{ uri: mechanical.avatar }} />
+                <Thumbnail source={{ uri: mechanical.picture }} />
                 <Text style={styles.title}>{mechanical.name}</Text>
                 <Text style={styles.subtitle}>{mechanical.description}</Text>
                 <Text style={styles.label}>Serviços</Text>

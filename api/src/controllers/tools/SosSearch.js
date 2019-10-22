@@ -20,13 +20,18 @@ module.exports = {
                             $geoWithin: {
                                 $centerSphere: [[longitude, latitude], radius]
                             }
-                        }
-                    },
+                        },
+                        status: 'P'
+                    } 
                 );
+
+
+                for (let i = 0; i < sos.length; i++) {
+                    sos[i].vehicle = await Vehicle.findById(sos[i].vehicle, { _id: 1, picture: 1, board: 1 });
+                }
 
                 return res.json({ status: true, sos: sos });
             } catch (e) {
-                console.log(e);
                 return res.status(400).json({ status: false, message: e });
             }
         }

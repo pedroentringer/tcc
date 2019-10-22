@@ -53,7 +53,7 @@ export default function Login(props) {
             <CardItem>
               <Body>
                 <Input placeholder="Telefone" keyboardType='phone-pad' value={tel} onChangeText={setTel}></Input>
-                <Input placeholder="Senha" keyboardType="default" secureTextEntry={true} value={password} onChangeText={setPassword}></Input>
+                <Input placeholder="Senha" keyboardType="default" secureTextEntry={true} value={password} onChangeText={setPassword} onSubmitEditing={handleLogin}></Input>
               </Body>
             </CardItem>
           </Card>

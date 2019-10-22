@@ -1,11 +1,13 @@
-import React, {useState} from "react";
-import {StyleSheet} from "react-native";
-import { Container,Content, Thumbnail, Button, Text, Input } from 'native-base';
+import React, {useState, useEffect} from "react";
+import {StyleSheet, Keyboard, PermissionsAndroid, Alert, View} from "react-native";
+import { Container,Content, Button, Text, Input } from 'native-base';
 import location from "../services/location";
-
+import api from "../services/api";
 
 export default function Cadastro(props) {
     const { navigation } = props;
+
+    const [locationPermission, setLocationPermission] = useState(false);
 
     const [text, setText] = useState('Criar Minha Conta');
     const [razaoSocial, setRazaoSocial] = useState('');
@@ -22,49 +24,97 @@ export default function Cadastro(props) {
     const [endereco, setEndereco] = useState('');
     const [numero, setNumero] = useState('');
 
+    const [services, setServices] = useState([]);
+    const [newService, setNewService] = useState('');
+
+    function addNewService(){
+        setServices([...services, newService]);
+        setNewService('');
+    }
+
+    function requestLocationPermission() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const checked = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                if (!checked) {
+                    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        resolve(true);
+                    }
+                } else {
+                    resolve(true);
+                }
+            } catch (err) {
+                resolve(false);
+            }
+        });
+    }
+
+    useEffect(() => {
+        async function locationPermissionAlert() {
+            const permission = await requestLocationPermission();
+            if (permission == true) {
+                setLocationPermission(permission);
+            }else{
+                locationPermissionAlert();
+            }
+        }
+
+        locationPermissionAlert();
+    }, []);
+
     async function handleRegister() {
         Keyboard.dismiss();
         setText('Carregando...');
         try {
 
-            const lastKnownLocation = await location.getLastKnownLocation();
+            if(locationPermission == false){
+                showAlert('Localização', 'Você precisa liberar a permissão de localização.')
+                setText('Criar Minha Conta');
+            }else{
+                const lastKnownLocation = await location.getLastKnownLocation();
 
-            const newMechanical = {
-                name: razaoSocial,
-                description: descricao,
-                tel: tel,
-                picture: 'https://blog.etonini.com.br/wp-content/uploads/2018/01/134576-responsabilidades-das-oficinas-mecanicas-o-que-eu-preciso-saber-999x640.jpg',
-                cnpj: cnpj,
-                elevation:{
-                    quantity: 0,
-                    number: '5.0'
-                },
-                address:{
-                    uf: uf,
-                    city: cidade,
-                    neighborhood: bairro,
-                    address: endereco,
-                    number: numero,
-                    zipcode: cep,
-                    local: {
-                        type: "Point",
-                        coordinates: [lastKnownLocation.coords.longitude, lastKnownLocation.coords.latitude]
+                const newMechanical = {
+                    name: razaoSocial,
+                    description: descricao,
+                    password: senha,
+                    tel: tel,
+                    email:email,
+                    picture: 'https://www.empregamecanico.com.br/assets/images/logos/logo-214248f77e80c0f1107f57adb02080fc.jpg',
+                    cnpj: cnpj,
+                    services: services,
+                    evaluation:{
+                        quantity: 0,
+                        number: '5.0'
+                    },
+                    address:{
+                        uf: uf,
+                        city: cidade,
+                        neighborhood: bairro,
+                        address: endereco,
+                        number: numero,
+                        zipcode: cep,
+                        local: {
+                            type: "Point",
+                            coordinates: [lastKnownLocation.coords.longitude, lastKnownLocation.coords.latitude]
+                        }
                     }
-                }
-            };
+                };
+    
+                console.tron.log(newMechanical);
+                const response = await api.post("/mechanicals", newMechanical);
+                
+                const { mechanical, token } = response.data;
+                setText('Criar Minha Conta');
+                navigation.navigate("tab", {mechanical, token});
+            }
 
-            const response = await api.post("/mechanicals", newMechanical);
-            const { mechanical, token } = response.data;
-  
-            setText('Criar Minha Conta');
-            navigation.navigate("tab", {mechanical, token});
+            
         } catch (e) {
             setText('Criar Minha Conta');
-            if (e.response.data.message) {
-                showAlert("Algo deu errado", e.response.data.message);
-            } else {
+            
                 showAlert("Algo deu errado", "Falha ao registrar, tente novamente.");
-            }
+            
         }
     }
   
@@ -92,7 +142,7 @@ export default function Cadastro(props) {
                 <Input style={styles.input} keyboardType="default" placeholder="Email" value={email} onChangeText={setEmail}></Input>
                 <Input style={styles.input} keyboardType="default" secureTextEntry={true} placeholder="Senha" value={senha} onChangeText={setSenha}></Input>
 
-                <Text style={styles.label}>Endereço</Text>
+                <Text style={[styles.label, {marginTop:30}]}>Endereço</Text>
                 <Input style={styles.input} keyboardType="phone-pad" placeholder="CEP" value={cep} onChangeText={setCep}></Input>
                 <Input style={styles.input} keyboardType="default" placeholder="UF" value={uf} onChangeText={setUf}></Input>
                 <Input style={styles.input} keyboardType="default" placeholder="Cidade" value={cidade} onChangeText={setCidade}></Input>
@@ -100,6 +150,22 @@ export default function Cadastro(props) {
                 <Input style={styles.input} keyboardType="default" placeholder="Endereço" value={endereco} onChangeText={setEndereco}></Input>
                 <Input style={styles.input} keyboardType="phone-pad" placeholder="Numero" value={numero} onChangeText={setNumero}></Input>
 
+                <Text style={[styles.label, {marginTop:30}]}>Adicionar Serviços</Text>
+                <View style={styles.buttons}>
+                 {services.map((service, index) => {
+                     return (
+                        <Button key={index} style={[styles.button, {margin: 5, marginBottom: 10}]} rounded>
+                            <Text>{service}</Text>
+                        </Button>
+                     )
+                 })}
+                </View>
+                <Input style={styles.input} keyboardType="default" placeholder="Serviço" value={newService} onChangeText={setNewService} onSubmitEditing={addNewService}></Input>
+                <Button style={styles.button} full onPress={addNewService}>
+                    <Text>Adicionar Serviço</Text>
+                </Button>
+
+                <Text style={styles.label}>Enviar Registro</Text>
                 <Button style={styles.button} full onPress={handleRegister}>
                     <Text>{text}</Text>
                 </Button>
@@ -128,6 +194,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontWeight: 'bold',
     },
+    buttons:{
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
     button: {
         paddingVertical: 15,
         borderRadius: 5,
@@ -135,6 +205,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop:10,
+        marginBottom:60
     },
     input:{
         backgroundColor: '#ffffff',

@@ -31,7 +31,7 @@ const tab = createMaterialTopTabNavigator({
         })
     },
 }, {
-    initialRouteName: 'SOS',
+    initialRouteName: 'Profile',
     tabBarOptions: {
         activeTintColor: '#333',
         inactiveTintColor: '#333',
