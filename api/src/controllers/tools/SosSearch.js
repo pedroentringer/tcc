@@ -1,6 +1,7 @@
 const User = require("../../models/User");
 const Sos = require("../../models/Sos");
 const Vehicle = require("../../models/Vehicle");
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 const km = 10;
 const milha = km / 1.609;
@@ -25,12 +26,16 @@ module.exports = {
                     } 
                 );
 
-
+                const allSos = [];
                 for (let i = 0; i < sos.length; i++) {
-                    sos[i].vehicle = await Vehicle.findById(sos[i].vehicle, { _id: 1, picture: 1, board: 1 });
+                    const newSos = JSON.parse(JSON.stringify(sos[i]));
+                    newSos.vehicle = await Vehicle.findById(sos[i].vehicle, { _id: 1, picture: 1, board: 1 });
+                    const user = await User.findOne({sos: new ObjectId(sos[i]._id)}, {_id:1});
+                    newSos.userId = user._id;
+                    allSos.push(newSos);
                 }
 
-                return res.json({ status: true, sos: sos });
+                return res.json({ status: true, sos: allSos });
             } catch (e) {
                 return res.status(400).json({ status: false, message: e });
             }

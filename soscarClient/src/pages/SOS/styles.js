@@ -142,3 +142,25 @@ export const Mensagem = styled.Text`
     font-size: 14px;
     color: #8898aa;
 `;
+
+
+export const Button = styled.TouchableOpacity.attrs({
+    activeOpacity: 0.9
+})`
+    padding: 0 20px;
+    height: 40px;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 7px 18px rgba(87, 69, 239, 0.2);
+    elevation: 1;
+    margin-top: 20px;
+`;
+
+export const ButtonText = styled.Text`
+    font-family: "Montserrat-Bold";
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #fff;
+`;

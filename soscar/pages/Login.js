@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import api from "../services/api";
 import { StyleSheet, Alert, Keyboard } from "react-native";
 import { Container,Content, Card, CardItem, Body, Button, Text, Input } from 'native-base';
+import api from "../services/api";
 
 export default function Login(props) {
     const { navigation } = props;

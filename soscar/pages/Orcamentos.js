@@ -14,7 +14,8 @@ export default function Orcamento(props) {
                 description: 'Será preciso tampar o buraco',
                 value: '52,30',
                 duration: '13h',
-                status: 'Pendente'
+                status: 'Pendente',
+                visto:'Não Visualizado'
             },
             {
                 avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
@@ -22,7 +23,8 @@ export default function Orcamento(props) {
                 description: 'Será preciso tampar o buraco',
                 value: '52,30',
                 duration: '13h',
-                status: 'Pendente'
+                status: 'Pendente',
+                visto:'Visualizado'
             },
             {
                 avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
@@ -30,7 +32,8 @@ export default function Orcamento(props) {
                 description: 'Será preciso tampar o buraco',
                 value: '52,30' ,
                 duration: '13h',
-                status: 'Pendente'
+                status: 'Pendente',
+                visto:'Visualizado'
             },
         ]
 
@@ -45,9 +48,10 @@ export default function Orcamento(props) {
               <Body>
                 <Text>{item.title}</Text>
                 <Text note>{item.description}</Text>
+                <Text note>R${item.value}</Text>
               </Body>
               <Right>
-                <Text note>R${item.value}</Text>
+                <Text note>{item.visto}</Text>
               </Right>
             </ListItem>
             )

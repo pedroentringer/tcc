@@ -1,113 +1,67 @@
-import React from "react";
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import React, { useState, useEffect } from "react";
+import { View } from 'react-native';
+import { Container,  Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import moment from "moment";
+
+import api from "../services/api";
+import location from "../services/location";
 
 
 
 export default function SOS(props) {
     const { navigation } = props;
+    const mechanical = navigation.getParam('mechanical');
+    const token = navigation.getParam('token');
 
-    renderItems = () => {
-        const items = [
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-            {
-                avatar: 'https://imganuncios.mitula.net/hyundai_hb20_2013_flex_hyundai_hb20_1_0_comfort_12v_flex_4p_manual_azul_20132013_66000_km_6470130554386095216.jpg',
-                title: 'Pneu furado',
-                description: 'Passei por um buraco que purou meu pneu',
-                hour: '14:44' 
-            },
-        ]
+    const [sos, setSos] = useState([]);
+    const [message, setMessage] = useState('Buscando todos os SOS');
 
-        return items.map( (item, index) => {
+    useEffect(() => {
+        getSos();
+    }, []);
+
+    async function getSos() {
+        try{
+            const lastKnownLocation = await location.getLastKnownLocation();
+            const response = await api.get(`/tools/sos/?lat=${lastKnownLocation.coords.latitude}&long=${lastKnownLocation.coords.longitude}`)
+            const { sos } = response.data;
+            setSos(sos);
+
+            if(sos.length == 0){
+                setMessage('Nenhum SOS nessa região');
+            }
+        }catch(err){
+            setMessage('Falha ao buscar SOS');
+            showAlert('Falha ao buscar SOS', 'Não foi possível buscar os novos SOS no momento.');
+        }
+    }
+
+    function showAlert(title, message) {
+        Alert.alert(
+            title,
+            message,
+            [
+                { text: "Tentar novamente", onPress: getSos }
+            ],
+            { cancelable: true }
+        );
+    }
+
+    function renderItems(){
+        return sos.map( (item, index) => {
             return (
                 <ListItem avatar key={index} onPress={()=> {
-                    navigation.navigate('SOSView', {sos: item})
+                    navigation.navigate('SOSView', {sos: item, mechanical: mechanical, token: token})
                 }}>
               <Left>
-                <Thumbnail source={{ uri: item.avatar }} />
+                <Thumbnail source={{ uri: item.vehicle.picture }} />
               </Left>
               <Body>
                 <Text>{item.title}</Text>
-                <Text note>{item.description}</Text>
+                <Text note style={{marginBottom:5}}>{item.description}</Text>
               </Body>
               <Right>
-                <Text note>{item.hour}</Text>
+                <Text note>{moment(item.createdAt).format('HH:mm')}</Text>
               </Right>
             </ListItem>
             )
@@ -118,7 +72,11 @@ export default function SOS(props) {
         <Container>
         <Content>
           <List>
-          {this.renderItems()}
+          { sos.length > 0 ? renderItems() : (
+              <View>
+                  <Text>{message}</Text>
+              </View>
+          )}
           </List>
         </Content>
       </Container>

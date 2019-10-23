@@ -124,7 +124,7 @@ export default function Cadastro(props) {
             message,
             [
                 {
-                    text: "Tentar Novamente"
+                    text: "Entendi"
                 }
             ],
             { cancelable: false }

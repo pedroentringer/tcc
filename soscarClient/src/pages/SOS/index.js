@@ -8,8 +8,6 @@ import {
     Header,
     Status,
     StatusText,
-    CancelarSOS,
-    BtnCancelarSOS,
     Scroll,
     Content,
     Title,
@@ -23,7 +21,9 @@ import {
     CardDescription,
     CardStatus,
     CardStatusText,
-    Mensagem
+    Mensagem,
+    Button,
+    ButtonText
 } from "./styles";
 
 import api from "../../services/api";
@@ -39,25 +39,29 @@ export default function SOS(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        async function getOrcamentos() {
-            setIsLoading(true);
-            try {
-                const realm = await getRealm();
-                const user = await realm.objectForPrimaryKey("User", 1);
-                const token = await realm.objectForPrimaryKey("Token", 1);
-
-                const response = await api.get(`/users/${user._id}/sos/${sos._id}/budgets`, { headers: { token: token.token } });
-                setOrcamentos(response.data.budgets);
-                setIsLoading(false);
-            } catch (e) {
-                setIsLoading(false);
-                const message = e.response.data.message || "Falha ao buscar orçamentos, tente novamente.";
-                showAlert("Algo deu errado", message);
-            }
-        }
-
-        getOrcamentos();
+        getOrcamentos(true);
     }, []);
+
+    async function getOrcamentos(loading) {
+        setIsLoading(loading);
+        try {
+            const realm = await getRealm();
+            const user = await realm.objectForPrimaryKey("User", 1);
+            const token = await realm.objectForPrimaryKey("Token", 1);
+
+            const response = await api.get(`/users/${user._id}/sos/${sos._id}/budgets`, { headers: { token: token.token } });
+            setOrcamentos(response.data.budgets);
+            setIsLoading(false);
+
+            setTimeout(function(){
+                getOrcamentos(false);
+            }, 2000);
+        } catch (e) {
+            setIsLoading(false);
+            const message = e.response.data.message || "Falha ao buscar orçamentos, tente novamente.";
+            showAlert("Algo deu errado", message);
+        }
+    }
 
     function showAlert(title, message) {
         Alert.alert(
@@ -147,13 +151,6 @@ export default function SOS(props) {
                         <Status style={{ backgroundColor: sosStatus.backgroundColor }}>
                             <StatusText>{sosStatus.text}</StatusText>
                         </Status>
-                        {sos.status == "P" && (
-                            <CancelarSOS>
-                                <BtnCancelarSOS onPress={handleCancel}>
-                                    <StatusText>X - Cancelar SOS</StatusText>
-                                </BtnCancelarSOS>
-                            </CancelarSOS>
-                        )}
                     </Header>
 
                     <ContainerStatusContent>
@@ -176,6 +173,12 @@ export default function SOS(props) {
                     <Content>
                         <Title>Orçamentos</Title>
                         {orcamentos.length > 0 ? this.renderOrcamentos() : <Mensagem>Nenhum orçamento recebido até o momento</Mensagem>}
+
+                        {sos.status == "P" && (
+                            <Button style={{ backgroundColor: "#e53935" }} onPress={handleCancel}>
+                                <ButtonText>Cancelar SOS</ButtonText>
+                            </Button>
+                        )}
                     </Content>
                 </Scroll>
             </Container>
