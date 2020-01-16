@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from 'react-native';
+import { View, Alert, PermissionsAndroid} from 'react-native';
 import { Container,  Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
 import moment from "moment";
 
@@ -15,13 +15,34 @@ export default function SOS(props) {
 
     const [sos, setSos] = useState([]);
     const [message, setMessage] = useState('Buscando todos os SOS');
+    const [locationPermission, setLocationPermission] = useState(false);
 
     useEffect(() => {
         getSos();
     }, []);
 
+    function requestLocationPermission() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const checked = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                if (!checked) {
+                    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        resolve(true);
+                    }
+                } else {
+                    resolve(true);
+                }
+            } catch (err) {
+                resolve(false);
+            }
+        });
+    }
+
     async function getSos() {
         try{
+            await requestLocationPermission();
+            await location.start();
             const lastKnownLocation = await location.getLastKnownLocation();
             const response = await api.get(`/tools/sos/?lat=${lastKnownLocation.coords.latitude}&long=${lastKnownLocation.coords.longitude}`)
             const { sos } = response.data;
@@ -31,7 +52,7 @@ export default function SOS(props) {
                 setMessage('Nenhum SOS nessa região');
             }
         }catch(err){
-            setMessage('Falha ao buscar SOS');
+            setMessage('Falha ao buscar SOS - ' + err.message);
             showAlert('Falha ao buscar SOS', 'Não foi possível buscar os novos SOS no momento.');
         }
     }
